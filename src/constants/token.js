@@ -4,4 +4,6 @@ export const GET_TOKEN_BALANCE_INTERVAL = 1000
 export const DEFAULT_TOKEN_LIST = [
   { symbol: 'iost' },
   { symbol: 'qed' },
+  { symbol: 'metx' },
+  { symbol: 'iet' },
 ]
