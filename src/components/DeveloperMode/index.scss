@@ -1,0 +1,67 @@
+@import "colors.scss";
+
+.developerMode-box {
+  position: relative;
+  width: 100%;
+  height: 540px;
+  background-color: $gray;
+  padding-top: 40px;
+  ul {
+    padding: 0;
+    li {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      height: 80px;
+      padding-left: 40px;
+      cursor: pointer;
+      &:hover {
+        background-color: $white;
+      }
+
+      .slider {
+        position: relative;
+        display: block;
+        cursor: pointer;
+        margin-left: 10px;
+        height:26px;
+        width:48px;
+        float: right;
+        // bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 34px;
+      }
+      
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 50%;
+      }
+
+      .enabled {
+        .slider {
+          background-color: #2196F3;
+          box-shadow: 0 0 1px #2196F3;
+        }
+        .slider:before {
+          -webkit-transform: translateX(22px);
+          -ms-transform: translateX(22px);
+          transform: translateX(22px);
+        }
+      }      
+      .name {
+        font-size: 18px;
+        color: #333333;
+      }
+    }
+  }
+}
