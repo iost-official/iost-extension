@@ -18,7 +18,6 @@ class DeveloperMode extends Component<Props> {
 
     getDeveloperStatus = async () => {
         const developerMode = await utils.getStorage('developerMode');
-        console.log(developerMode)
         this.setState({
             developerMode
         });
@@ -32,7 +31,6 @@ class DeveloperMode extends Component<Props> {
     toggleDeveloperMode = async() => {
         const developerMode = !this.state.developerMode;
         this.setState({developerMode});
-        console.log(developerMode);
         utils.setStorage('developerMode', developerMode);
     }
 
