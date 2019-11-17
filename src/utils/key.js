@@ -23,8 +23,8 @@ export const privateKeyToPublicKey = (privateKey) => {
 }
 
 // http://54.249.186.224
-export const publickKeyToAccount = async (publickKey, isProd = true) => {
-  const url = isProd? 'https://explorer.iost.io/': ' http://54.249.186.224/'
+export const publickKeyToAccount = async (publickKey, isProd) => {
+  const url = isProd == 'MAINNET' ? 'https://explorer.iost.io/': isProd == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'http://54.249.186.224/'
   try {
     const { data } = await axios.get(`${url}iost-api/accounts/${publickKey}`,{
       timeout: 10000
@@ -37,4 +37,22 @@ export const publickKeyToAccount = async (publickKey, isProd = true) => {
   }
   return []
   // throw new Error('Invlid publickKey');
+}
+
+export const nameAndPublicKeyToAccount = async (name, publicKey, isProd) => {
+  const url = isProd == 'MAINNET' ? 'https://explorer.iost.io/': isProd == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'http://54.249.186.224/'
+  try {
+    const { data } = await axios.get(`${url}/getAccount/${name}/1`,{
+      timeout: 10000
+    })
+    let k = JSON.stringify(data.permissions);
+    if(k.indexOf(publicKey)>-1){
+      return data;
+    } else {
+      return [];
+    }
+  } catch (err) {
+    console.log(err)
+  }
+  return []
 }

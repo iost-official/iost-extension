@@ -31,7 +31,7 @@ const utils = {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
   getNetWork(type){
-    return type == 'MAINNET'?'https://api.iost.io':'https://test.api.iost.io'
+    return type == 'MAINNET' ? 'https://api.iost.io' : type == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'https://test.api.iost.io'
   },
   getStorage(key, defaultValue) {
     return new Promise(resolve => (
