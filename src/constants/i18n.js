@@ -33,12 +33,14 @@ const enTranslation = {
   "CreateAccount_PaymentAddress": "Payment Address",
   "CreateAccount_CheckCreate": "Check account creation status",
   "CreateAccount_ToastTip2": "Account not created yet ",
-  "CreateAccount_ToastTip3": "账户创建成功",
+  "CreateAccount_ToastTip3": "Account successfully created",
 
   "ImportAccount_EnterPrivate": "Fill in MainNet  / TestNet account private key",
+  "ImportAccount_EnterName": "Fill in LocalNet account name",
   "ImportAccount_Submit": "Submit",
   "ImportAccount_Completed": "Import Completed",
   "ImportAccount_Failed": "Import failed, please try again.",
+  "ImportAccount_LocalNetMessage": "To import a LocalNet account, please also enter account name below:",
   "ImportAccount_Tip1": "No corresponding account found",
   "ImportAccount_Tip2": "Private key can not be blank",
   "ImportAccount_Tip3": "No corresponding public key found ",
@@ -75,12 +77,14 @@ const enTranslation = {
   "Settings_whitelist": "Whitelist",
   "Settings_iostWallet": "About IOST Wallet",
   "Settings_assetManage": "Asset Management",
+  "Settings_developerMode": "Developer Mode",
 
 
   "ManageAccount_Add": "Import",
   "ManageAccount_PublicKey": "PubKey",
   "ManageAccount_PrivateKey": "Private Key",
   "ManageAccount_Official": "MainNet",
+  "ManageAccount_Local": "LocalNet",
   "ManageAccount_Test": "TestNet",
   "ManageAccount_Copy": "Successfully Copied",
   "ManageAccount_Delete": "Do you confirm to delete?",
@@ -99,6 +103,7 @@ const enTranslation = {
   "Lock_Unlock": "Unlock Wallet",
   "AboutIOST_nodeVoting": "Join voting for nodes.",
   "AboutIOST_userAgreement": "User Agreement",
+  "AboutIOST_developerMode": "Developer Mode",
 
   "AssetManage_TokenName": "Token Name",
   "AssetManage_Add": "Add",
@@ -244,6 +249,8 @@ const zhTranslation = {
   "Settings_whitelist": "白名单",
   "Settings_iostWallet": "关于IOST钱包",
   "Settings_assetManage": "资产管理",
+  "Settings_developerMode": "开发人员模式",
+
 
   "ManageAccount_Add": "添加",
   "ManageAccount_PublicKey": "公钥",
@@ -271,6 +278,7 @@ const zhTranslation = {
 
   "AboutIOST_nodeVoting": "参与节点投票",
   "AboutIOST_userAgreement": "用户协议",
+  "AboutIOST_developerMode": "开发人员模式",
 
   "AssetManage_TokenName": "Token名称",
   "AssetManage_Add": "添加",
@@ -420,6 +428,7 @@ const koTranslation = {
   "Settings_whitelist": "화이트리스트",
   "Settings_iostWallet": "IOST 지갑 정보",
   "Settings_assetManage": "Asset Management",
+  "Settings_developerMode": "개발자 모드",
 
 
   "ManageAccount_Add": "추가",
@@ -444,6 +453,8 @@ const koTranslation = {
   "Lock_Unlock": "지갑 잠금해제",
   "AboutIOST_nodeVoting": "노드 투표에 참여하십시오.",
   "AboutIOST_userAgreement": "사용자 동의서",
+  "AboutIOST_developerMode": "개발자 모드",
+
 
   "AssetManage_TokenName": "Token Name",
   "AssetManage_Add": "Add",
