@@ -6,7 +6,7 @@ import Button from 'components/Button'
 import LoadingImage from 'components/LoadingImage'
 import NetworkSelector from 'components/NetworkSelector'
 import iost from 'iostJS/iost'
-import { privateKeyToPublicKey, publickKeyToAccount } from 'utils/key'
+import { privateKeyToPublicKey, publickKeyToAccount, nameAndPublicKeyToAccount } from 'utils/key'
 import utils from 'utils'
 import ui from 'utils/ui';
 import user from 'utils/user';
@@ -35,13 +35,16 @@ class AccountImport extends Component<Props> {
 
   state = {
     privateKey: '',
+    accountName: '',
     isLoading: false,
     errorMessage: '',
+    developerMode: undefined,
     canBack: true
   }
 
   componentDidMount() {
     const { locationList } = this.props
+    this.getDeveloperStatus();
     if(locationList[locationList.length-1].indexOf('accountImport') < 0){
       ui.settingLocation('/accountImport')
     }
@@ -61,38 +64,53 @@ class AccountImport extends Component<Props> {
     })
   }
 
+  getDeveloperStatus = async () => {
+    const developerMode = await utils.getStorage('developerMode');
+    this.setState({
+        developerMode
+    });
+  }
+
   onSubmit = async () => {
     this.setState({
       isLoading: true
     })
     const privateKey = _trim(this.state.privateKey)
+    const accountName = _trim(this.state.accountName)
     const { changeLocation } = this.props
 
     let publicKey, accounts = []
     try {
       publicKey = privateKeyToPublicKey(privateKey)
-
-      let accounts1 = await publickKeyToAccount(publicKey, true)
-      let accounts2 = await publickKeyToAccount(publicKey, false)
-
       const password = await user.getLockPassword()
-      accounts1 = accounts1.map(item => {
-        return {
-          name: item.account_info.name,
-          network: 'MAINNET',
-          privateKey: utils.aesEncrypt(privateKey, password),
-          publicKey: publicKey,
-        }
-      })
-      accounts2 = accounts2.map(item => {
-        return {
-          name: item.account_info.name,
-          network: 'TESTNET',
-          privateKey: utils.aesEncrypt(privateKey, password),
-          publicKey: publicKey,
-        }
-      })
-      accounts = accounts1.concat(accounts2)
+      if(accountName) {
+        let account = await nameAndPublicKeyToAccount(accountName, publicKey, 'LOCALNET')
+        accounts = [{ name: account.name,
+            network: 'LOCALNET',
+            privateKey: utils.aesEncrypt(privateKey, password),
+            publicKey: publicKey,
+        }]
+      } else {
+        let accounts1 = await publickKeyToAccount(publicKey, 'MAINNET')
+        let accounts2 = await publickKeyToAccount(publicKey, 'TESTNET')
+        accounts1 = accounts1.map(item => {
+          return {
+            name: item.account_info.name,
+            network: 'MAINNET',
+            privateKey: utils.aesEncrypt(privateKey, password),
+            publicKey: publicKey,
+          }
+        })
+        accounts2 = accounts2.map(item => {
+          return {
+            name: item.account_info.name,
+            network: 'TESTNET',
+            privateKey: utils.aesEncrypt(privateKey, password),
+            publicKey: publicKey,
+          }
+        })
+        accounts = accounts1.concat(accounts2);
+      }
     } catch (e) {
       console.log(e)
       publicKey = ''
@@ -171,12 +189,19 @@ class AccountImport extends Component<Props> {
   render() {
     const { isLoading, canBack } = this.state
     const { changeLocation, locationList } = this.props
+    if(this.state.developerMode === undefined) { 
+      return null;
+    }
     return (
       <Fragment>
         <Header title={I18n.t('firstLogin_ImportAccount')} logo={!canBack} onBack={this.backTo} hasSetting={false} />
         <div className="accountImport-box">
           <textarea name="privateKey" id="" className="privateKey-content" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterPrivate')}/>
-
+          {this.state.developerMode === true ? (
+            <Fragment><p className="accountNameText">{I18n.t('ImportAccount_LocalNetMessage')}</p>
+            <input name="accountName" id="" className="input-accountName" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterName')}/>
+            </Fragment>
+          ) : (null)}
           <Button className="btn-submit" onClick={this.onSubmit}>{isLoading ? <LoadingImage /> : I18n.t('ImportAccount_Submit')}</Button>
         </div>
       </Fragment>
