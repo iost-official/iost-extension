@@ -106,7 +106,7 @@ class AssetManage extends Component<Props> {
       const account = await user.getActiveAccount()
       const _user = `${account.name}-${account.network}`
       // 未找到该币，会报错
-      const data = await getTokenInfo(token, account.network == 'MAINNET')
+      const data = await getTokenInfo(token, account.network)
       const assets = await utils.getStorage('assets', {})
       const asset = { symbol: token, fullName: data.full_name }
       assets[_user] = [...(assets[_user] || []), asset]

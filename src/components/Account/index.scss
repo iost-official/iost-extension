@@ -11,6 +11,9 @@
     &.test {
       background-color: $green;
     }
+    &.local {
+      background-color: $blue;
+    }
   }
   .account-name {
     font-size: 14px;
@@ -93,13 +96,16 @@
         }
         .account-title {
           text-align: center;
-          width: 50px;
+          width: 60px;
           height: 20px;
           line-height: 20px;
           color: $white;
           background-color: #E28A1E;
           &.test {
             background-color: $green;
+          }
+          &.local {
+            background-color: $blue;
           }
         }
         .circle {

@@ -124,7 +124,7 @@ class Account extends Component<Props> {
       <Fragment>
         <Header onSetting={this.moveTo('/accountSetting')} logo={true} hasAdd onBack={this.moveTo('/assetManage')}>
           <div className="account-currentName-box" onClick={this.toggleAccountList}>
-            <i className={cx('circle', currentAccount.network != 'MAINNET' ? 'test' : '')} />
+            <i className={cx('circle', currentAccount.network == 'MAINNET' ? '' : currentAccount.network == 'LOCALNET' ? 'local' : 'test')} />
             <span className="account-name">{currentAccount.name}</span>
             <i className={cx('arrow', accounts.length <=1 ? 'arrow-hide' : (isShowAccountList ? 'arrow-down' : 'arrow-right'))}
                 />
@@ -137,7 +137,7 @@ class Account extends Component<Props> {
                 accounts.map((item) =>
                   <li key={user.getUserUnique(item)} onClick={this.chooseAccount(item)}>
                     {/*<i className={cx('circle', item.network != 'MAINNET' ? 'test' : '')} />*/}
-                    <span className={cx('account-title', item.network != 'MAINNET' ? 'test' : '')}>{item.network != 'MAINNET' ? I18n.t('ManageAccount_Test') : I18n.t('ManageAccount_Official')}</span>
+                    <span className={cx('account-title', item.network == 'MAINNET' ? '' : item.network == 'LOCALNET' ? 'local' : 'test')}>{item.network == 'MAINNET' ? I18n.t('ManageAccount_Official') : item.network == 'LOCALNET' ? I18n.t('ManageAccount_Local'): I18n.t('ManageAccount_Test')}</span>
                     <span className="account-name">{item.name}</span>
                     <i className={cx('check', user.getUserUnique(item) == user.getUserUnique(currentAccount) ? 'checked' : '')} />
                   </li>)

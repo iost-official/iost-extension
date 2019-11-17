@@ -60,7 +60,7 @@ class TokenDetail extends Component<Props> {
     const account = await user.getActiveAccount()
     Promise.all([
       iost.rpc.blockchain.getBalance(iost.account.getID(), selectedTokenSymbol),
-      getTokenInfo(selectedTokenSymbol, account.network == 'MAINNET')
+      getTokenInfo(selectedTokenSymbol, account.network)
     ]).then(([balance, fullName]) => {
       this.setState({
         isLoading: false,

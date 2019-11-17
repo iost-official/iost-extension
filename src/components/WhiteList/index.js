@@ -100,7 +100,7 @@ export default class extends Component {
           onBack={this.moveTo('/accountSetting')}
           hasSetting={false}>
           <div className="x-account-currentName-box" onClick={this.toggleAccountList}>
-            <i className={classnames('circle', activeAccount.network != 'MAINNET' ? 'test' : '')} />
+            <i className={classnames('circle', activeAccount.network == 'MAINNET' ? '': activeAccount.network == 'LOCALNET' ? 'local' : 'test')} />
             <span className="account-name">{activeAccount.name}</span>
             <i className={classnames('arrow', accounts.length <=1 ? 'arrow-hide' : (isShowAccountList ? 'arrow-down' : 'arrow-right'))}
                 />
@@ -110,8 +110,8 @@ export default class extends Component {
               {
                 accounts.map((item) =>
                   <li key={user.getUserUnique(item)} onClick={this.chooseAccount(item)}>
-                    <span className={classnames('account-title', item.network != 'MAINNET' ? 'test' : '')}>
-                      {item.network != 'MAINNET' ? I18n.t('ManageAccount_Test') : I18n.t('ManageAccount_Official')}
+                    <span className={classnames('account-title', item.network == 'MAINNET' ? '': item.network == 'LOCALNET' ? 'local' : 'test')}>
+                      {item.network == 'MAINNET' ? I18n.t('ManageAccount_Official') : item.network == 'LOCALNET' ? I18n.t('ManageAccount_Local') : I18n.t('ManageAccount_Test')}
                     </span>
                     <span className="account-name">{item.name}</span>
                     <i className={classnames('check', user.getUserUnique(item) == user.getUserUnique(activeAccount) ? 'checked' : '')} />

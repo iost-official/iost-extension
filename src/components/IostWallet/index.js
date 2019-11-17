@@ -8,6 +8,7 @@ import './index.scss'
 const settingList = [
   // { id: 1, name: 'nodeVoting' },
   { id: 2, name: 'userAgreement' },
+  { id: 3, name: 'developerMode' },
 ]
 type Props = {
 
@@ -21,6 +22,9 @@ class IostWallet extends Component<Props> {
 
   moveItem = (location) => () => {
     if (location == 'userAgreement') {
+      ui.settingLocation(`/${location}`)
+      this.moveTo(`/${location}`)()
+    } else if (location == 'developerMode') {
       ui.settingLocation(`/${location}`)
       this.moveTo(`/${location}`)()
     } else if (location == 'nodeVoting') {

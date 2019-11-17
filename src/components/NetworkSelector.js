@@ -18,6 +18,10 @@ const _iostNetworks = [
     value: 'https://api.iost.io',
   },
   {
+    label: 'LOCALNET',
+    value: 'http://127.0.0.1:30001'
+  },
+  {
     label: 'IOST TESTNET (EVEREST 2.0)',
     // value: 'https://api.iost.io',
     value: 'https://test.api.iost.io',

@@ -8,6 +8,7 @@ import LoadingImage from './LoadingImage';
 import Account from './Account';
 import AccountImport from './AccountImport';
 import AccountManage from './AccountManage';
+import DeveloperMode from './DeveloperMode';
 import TokenBalance from './TokenBalance';
 import TokenTransfer from './TokenTransfer';
 import TokenTransferFailed from './TokenTransferFailed';
@@ -39,6 +40,7 @@ export {
   Account,
   AccountImport,
   AccountManage,
+  DeveloperMode,
   TokenBalance,
   TokenTransfer,
   TokenTransferFailed,

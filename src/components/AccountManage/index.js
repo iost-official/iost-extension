@@ -5,6 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { Header, Modal, Toast } from 'components'
 import classnames from 'classnames'
 import iost from 'iostJS/iost'
+import bs58 from 'bs58';
 import * as accountActions from 'actions/accounts'
 import utils from 'utils';
 import ui from 'utils/ui';
@@ -14,11 +15,25 @@ import './index.scss'
 
 const { Modal1 } = Modal
 
-
 class AccountManage extends Component<Props> {
+
+  state = {
+    password: undefined
+  }
+
   componentDidMount() {
     ui.settingLocation('/accountManage')
+    this.getPassword();
   }
+
+  getPassword = async () => {
+    const password = await user.getLockPassword();
+    console.log(password);
+    this.setState({
+      password
+    });
+  }
+
   onCopy = () => {
     Toast.html(I18n.t('ManageAccount_Copy'))
   }
@@ -42,8 +57,6 @@ class AccountManage extends Component<Props> {
   }
 
   onDelete = async () => {
-
-
     const accounts = this.props.accounts.filter(item => user.getUserUnique(item) != user.getUserUnique(this.delItem))
     await user.setUsers(accounts)
     const activeAccount = await user.getActiveAccount()
@@ -70,8 +83,14 @@ class AccountManage extends Component<Props> {
     ui.toggleModal()
   }
 
+  
+  decodePrivateKey = (privateKey, password) => {
+    return utils.aesDecrypt(privateKey, password);
+  }
+
   render() {
-    const { accounts } = this.props
+    const { accounts } = this.props;
+    if (!this.state.password) { return null; }
     return (
       <Fragment>
         <Header
@@ -80,21 +99,20 @@ class AccountManage extends Component<Props> {
           onAddIost={this.moveTo('/accountImport')}
           setting={false}
         />
-        {/*<Header title={I18n.t('accountManage')} onBack={this.backTo} onAdd={this.moveTo('/accountImport')} setting={false} />*/}
         <div className="accountManage-box">
           {
             accounts.map((item) =>
               <div className="account-item" key={user.getUserUnique(item)}>
                 <div className="left">
                   <div className="account-name-box">
-                    <span className={classnames('account-title', item.network != 'MAINNET' ? 'test' : '')}>{item.network != 'MAINNET' ? I18n.t('ManageAccount_Test') : I18n.t('ManageAccount_Official')}</span>
+                    <span className={classnames('account-title', item.network == 'MAINNET' ? '' : item.network == 'LOCALNET' ? 'local' : 'test')}>{item.network == 'MAINNET' ? I18n.t('ManageAccount_Official') : item.network == 'LOCALNET' ? I18n.t('ManageAccount_Local') : I18n.t('ManageAccount_Test')}</span>
                     <span className="account-name">{item.name}</span>
                   </div>
                   <div className="publicKey-box">
-                    <span className="publicKey-title">{I18n.t('ManageAccount_PublicKey')}</span>
+                  <span className="publicKey-title">{I18n.t('ManageAccount_PrivateKey')}</span>
                     <span className="publicKey-name">
-                      <span>********</span>
-                      <CopyToClipboard onCopy={this.onCopy} text={item.publicKey}>
+                      <span className="truncate">************</span>
+                      <CopyToClipboard onCopy={this.onCopy} text={this.decodePrivateKey(item.privateKey, this.state.password)}>
                         <i className="copy" />
                       </CopyToClipboard>
                     </span>
@@ -111,10 +129,9 @@ class AccountManage extends Component<Props> {
   }
 }
 
-
 const mapStateToProps = (state) => ({
   accounts: state.accounts.accounts,
-  locationList: state.ui.locationList,
+  locationList: state.ui.locationList
 })
 
 export default connect(mapStateToProps)(AccountManage)

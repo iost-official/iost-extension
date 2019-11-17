@@ -30,6 +30,11 @@
         &.userAgreement {
           background-image: url("/static/images/icon-changeLanguage.png");
         }
+        &.developerMode {
+          background-image: url("/static/images/icon-developerMode.png");
+          background-size: contain;
+          background-repeat: no-repeat;
+        }
       }
       .name {
         font-size: 18px;
