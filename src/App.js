@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Login, Account, AccountImport, AccountManage, TokenTransfer, TokenTransferFailed, TokenTransferSuccess,
+import { Login, Account, AccountImport, AccountManage, DeveloperMode, TokenTransfer, TokenTransferFailed, TokenTransferSuccess,
   AccountQRCode, AccountCreateStep1, AccountCreateStep2, AccountCreateStep3, AccountSetting, ChangePwd,
   Lock, AccountAdd, ChangeLanguage, IostWallet, UserAgreement, GasManage, RamManage, WhiteList, TokenDetail,
   AssetManage
@@ -115,6 +115,8 @@ class App extends Component<Props> {
         return <ChangeLanguage changeLocation={this.changeLocation} />
       case '/whitelist':
         return <WhiteList changeLocation={this.changeLocation} />
+      case '/developerMode':
+        return <DeveloperMode changeLocation={this.changeLocation} />
       case '/iostWallet':
         return <IostWallet changeLocation={this.changeLocation} />
       case '/userAgreement':
