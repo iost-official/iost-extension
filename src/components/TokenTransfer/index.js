@@ -142,9 +142,8 @@ class Index extends Component<Props> {
     // tx.setTime(defaultConfig.expiration, defaultConfig.delay, 0)
     const tx = iost.iost.callABI('token.iost', 'transfer', [token, accountName, to, amount, memo])
 
-    if(iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0){
-      tx.setChainID(1023)
-    }
+    const chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    tx.setChainID(chainId)
 
     // tx.addApprove("*", defaultConfig.defaultLimit)
     tx.addApprove(token, +amount)
