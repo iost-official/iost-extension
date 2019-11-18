@@ -134,7 +134,6 @@ const iost = {
     tx.addApprove("iost", +args[2])
 
     const chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
-    console.log(chainId);
     tx.setChainID(chainId)
 
     iost.account.signTx(tx)
@@ -185,7 +184,6 @@ const iost = {
     }
 
     const chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
-    console.log(chainId);
     tx.setChainID(chainId)
 
     const fire = new Callback()
