@@ -23,8 +23,8 @@ export const privateKeyToPublicKey = (privateKey) => {
 }
 
 // http://54.249.186.224
-export const publickKeyToAccount = async (publickKey, isProd) => {
-  const url = isProd == 'MAINNET' ? 'https://explorer.iost.io/': isProd == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'http://54.249.186.224/'
+export const publickKeyToAccount = async (publickKey, isProd = true) => {
+  const url = isProd ? 'https://explorer.iost.io/' : 'http://54.249.186.224/'
   try {
     const { data } = await axios.get(`${url}iost-api/accounts/${publickKey}`,{
       timeout: 10000
