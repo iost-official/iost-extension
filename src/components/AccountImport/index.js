@@ -75,24 +75,25 @@ class AccountImport extends Component<Props> {
     this.setState({
       isLoading: true
     })
-    const privateKey = _trim(this.state.privateKey)
-    const accountName = _trim(this.state.accountName)
-    const { changeLocation } = this.props
+    const privateKey = _trim(this.state.privateKey);
+    const accountName = _trim(this.state.accountName);
+    const { changeLocation } = this.props;
 
     let publicKey, accounts = []
     try {
       publicKey = privateKeyToPublicKey(privateKey)
-      const password = await user.getLockPassword()
       if(accountName) {
         let account = await nameAndPublicKeyToAccount(accountName, publicKey, 'LOCALNET')
+        const password = await user.getLockPassword()
         accounts = [{ name: account.name,
             network: 'LOCALNET',
             privateKey: utils.aesEncrypt(privateKey, password),
             publicKey: publicKey,
         }]
       } else {
-        let accounts1 = await publickKeyToAccount(publicKey, 'MAINNET')
-        let accounts2 = await publickKeyToAccount(publicKey, 'TESTNET')
+        let accounts1 = await publickKeyToAccount(publicKey, true)
+        let accounts2 = await publickKeyToAccount(publicKey, false)
+        const password = await user.getLockPassword()
         accounts1 = accounts1.map(item => {
           return {
             name: item.account_info.name,
@@ -100,7 +101,7 @@ class AccountImport extends Component<Props> {
             privateKey: utils.aesEncrypt(privateKey, password),
             publicKey: publicKey,
           }
-        })
+        });
         accounts2 = accounts2.map(item => {
           return {
             name: item.account_info.name,
@@ -108,7 +109,7 @@ class AccountImport extends Component<Props> {
             privateKey: utils.aesEncrypt(privateKey, password),
             publicKey: publicKey,
           }
-        })
+        });
         accounts = accounts1.concat(accounts2);
       }
     } catch (e) {
