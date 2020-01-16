@@ -28,6 +28,7 @@ const i18n = {
     "Dapp_Tip1": "* Account authorization does not share your private key",
     "Dapp_Tip2": "* Current applications are developed by third parties, please pay attention to screening",
     "Dapp_Tip3": "* If you add this contract to the white-list, it will allow you to sign directly when you initiate the same contract request to the same beneficiary, manual operation will be no longer applied.",
+    "Dapp_Message_Signature": "Message Signature Requested",
   },
   ko: {
     "Transfer": "트랜스퍼",
@@ -53,6 +54,7 @@ const i18n = {
     "Dapp_Tip1": "* 계정 인증은 프라이빗 키를 공유하지 않습니다.",
     "Dapp_Tip2": "* 현재 응용 프로그램은 제 3 자에 의해 개발되었습니다. 스크리닝에 주의해 주세요.",
     "Dapp_Tip3": "* If you add this contract to the white-list, it will allow you to sign directly when you initiate the same contract request to the same beneficiary, manual operation will be no longer applied.",
+    "Dapp_Message_Signature": "Message Signature Requested",
   },
   zh: {
     "Transfer": "转账",
@@ -78,6 +80,7 @@ const i18n = {
     "Dapp_Tip1": "* 账户授权并不会共享您的私钥",
     "Dapp_Tip2": "* 当前应用为第三方开发，请注意甄别",
     "Dapp_Tip3": "* 如您将这个合约加入白名单，代表您允许您的账号在同一网站发起同一合约请求给同一收款方的情况下，直接给予签名，而不再进行手动授权。",
+    "Dapp_Message_Signature": "请求信息签名",
   },
 }
 
@@ -204,23 +207,34 @@ export default class extends Component {
     const { lang, tx: transaction, isAddWhitelist, iGASLimit, iGASPrice, showGasForm } = this.state
     const { tx, account } = transaction
     const hasTransfer = tx.actions.some(act => act.actionName === 'transfer')
+    const hasSignMessage = tx.actions.some(act => act.actionName === '@__SignMessage')
 
     return (
       <div className="multi-action">
         <div className="header">
-          <span
-            onClick={this.toggleWhiteList}
-            className={classnames('whitelist-btn', isAddWhitelist && 'active')}>
-            {transLocal(lang, 'Dapp_WhiteList')}
-          </span>
-          <h1 className="title">{transLocal(lang, hasTransfer ? 'Dapp_Signature' : 'Dapp_Authorization')}</h1>
+            {
+              hasSignMessage? null:
+                  (<span
+                      onClick={this.toggleWhiteList}
+                      className={classnames('whitelist-btn', isAddWhitelist && 'active')}>
+                      {transLocal(lang, 'Dapp_WhiteList')}
+                  </span>)
+            }
+          {/*<span*/}
+            {/*onClick={this.toggleWhiteList}*/}
+            {/*className={classnames('whitelist-btn', isAddWhitelist && 'active')}>*/}
+            {/*{transLocal(lang, 'Dapp_WhiteList')}*/}
+          {/*</span>*/}
+          <h1 className="title">{transLocal(lang, hasTransfer ? hasSignMessage?'Dapp_WhiteList':'Dapp_Signature' : 'Dapp_Authorization')}</h1>
           <p className="memo">{tx.actions.length} {transLocal(lang, tx.actions.length > 1 ? 'XActionsNeedYouPermissionS' : 'XActionsNeedYouPermission')}</p>
         </div>
         <div className="content">
           <section className="list">
             <ol>
-              {
-                tx.actions.map(act => (
+              {hasSignMessage
+                  ? null
+                  :
+                  tx.actions.map(act => (
                   <li key={act.contract}>{act.contract} <i className="arrow">-></i>  {act.actionName}</li>
                 ))
               }

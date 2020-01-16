@@ -2,6 +2,10 @@ const iostController = require('./IostController')
 const uuidv4 = require('uuid/v4');
 const crypto = require('crypto')
 
+const Signature = require('iost/lib/crypto/signature');
+const IOST = require('iost')
+const bs58 = require('bs58')
+const Codec = require('iost/lib/crypto/codec');
 
 const getStorage = (name, defvalue) => new Promise((resolve, reject) => {
   chrome.storage.local.get([name], (result) => {
@@ -42,9 +46,11 @@ TxController.prototype.processTx = async function(txIdx, isAddWhitelist, iGASPri
   const txInfo = this.txQueue[txIdx]
   if (!txInfo) throw new Error(`That TX does not exist. slotIdx: ${txIdx}`)
 
+  const signMessageActionName = "@__SignMessage";
+
   const { tx: _tx, txABI, actionId, account, network, domain } = txInfo
   const [ contract, actionName, memo ] = txABI
-  if(isAddWhitelist){
+  if(isAddWhitelist && signMessageActionName !== actionName){
     let whitelist = await getStorage('whitelist', [])
     let _to = contract
     if(actionName == 'transfer'){
@@ -94,6 +100,50 @@ TxController.prototype.processTx = async function(txIdx, isAddWhitelist, iGASPri
       // if (txABI[1] === 'transfer') {
       //   tx.addApprove("iost", txABI[2][3])
       // }
+
+      if (signMessageActionName === actionName) {
+          const waitSignMessage = memo[0];
+          let regex = /^[1-9a-zA-Z]{1,11}$/;
+          if (!regex.test(waitSignMessage)) {
+              this.port.forEach((port) => {
+                  port.postMessage({
+                      actionId: actionId,
+                      failed: `signMessage failure message must match '/^[1-9a-zA-Z]{12}$/'`
+                  });
+              })
+              return;
+          }
+          try {
+              const kp = new IOST.KeyPair(bs58.decode(encodedPrivateKey),encodedPrivateKey.length>50?2:1)
+              let codec = new Codec();
+              codec.pushString(waitSignMessage);
+              let waitSignMessageBinary = codec._buf;
+              const iostSignature = new Signature(waitSignMessageBinary, kp);
+              // {
+              //      "algorithm": "xxx",
+              //      "public_key": "xxx",
+              //      "signature: "base64 format"
+              //      "message": "message"
+              // }
+              const signatureResult = iostSignature.toJSON();
+              signatureResult['message'] = waitSignMessage;
+              this.port.forEach((port) => {
+                  port.postMessage({
+                      actionId: actionId,
+                      success: signatureResult
+                  });
+              })
+          } catch (error) {
+              this.port.forEach((port) => {
+                  port.postMessage({
+                      actionId: actionId,
+                      failed: `signMessage failure error: ${error.message}`
+                  });
+              })
+          }
+          return;
+      }
+
       const handler = iostController.iost.signAndSend(tx)
       let inverval = null
       // console.log('start')

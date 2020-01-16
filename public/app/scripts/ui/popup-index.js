@@ -18,6 +18,7 @@ const i18n = {
     "Dapp_Cancel": "Cancel",
     "Dapp_Confirm": "Confirm",
     "Dapp_Tip3": "* If you add this contract to the white-list, it will allow you to sign directly when you initiate the same contract request to the same beneficiary, manual operation will be no longer applied.",
+    "Dapp_Message_Signature": "Message Signature Requested",
   },
   ko: {
     "Dapp_Unlock": "지금 잠금해제하기",
@@ -29,6 +30,7 @@ const i18n = {
     "Dapp_Cancel": "취소",
     "Dapp_Confirm": "확인",
     "Dapp_Tip3": "* If you add this contract to the white-list, it will allow you to sign directly when you initiate the same contract request to the same beneficiary, manual operation will be no longer applied.",
+    "Dapp_Message_Signature": "Message Signature Requested",
   },
   zh: {
     "Dapp_Unlock": "立即解锁",
@@ -40,6 +42,7 @@ const i18n = {
     "Dapp_Cancel": "取消",
     "Dapp_Confirm": "确认",
     "Dapp_Tip3": "* 如您将这个合约加入白名单，代表您允许您的账号在同一网站发起同一合约请求给同一收款方的情况下，直接给予签名，而不再进行手动授权。",
+    "Dapp_Message_Signature": "请求信息签名",
   },
 }
 
@@ -138,16 +141,23 @@ class AskPopup extends Component<Props> {
   render() {
     const { isAddWhitelist } = this.state
     const [contractAddress, abi, args = []] = this.txInfo
-
+    const hasSignMessage = abi === '@__SignMessage';
     return (
       <MultiAction txInfo={this.txInfo} slotIdx={this.slotIdx}/>
     )
     return (
       <div className="AskPopup">
         <header className="AskPopup__header">
-          <p className="title">{abi == 'transfer' ? this.onTransLocal('Dapp_Signature') : this.onTransLocal('Dapp_Authorization')}</p>
-          <p><span>{contractAddress}</span><span>-></span><span>{abi}</span></p>
-          <span class={isAddWhitelist?'active':''} onClick={this.onToggleWhiteList}>  {this.onTransLocal('Dapp_WhiteList')}</span>
+          <p className="title">{abi == 'transfer' ? this.onTransLocal('Dapp_Signature') : hasSignMessage ?  this.onTransLocal('Dapp_WhiteList'): this.onTransLocal('Dapp_Authorization')}</p>
+          {
+              hasSignMessage
+                  ?(<p><span>{this.onTransLocal('Dapp_Message_Signature')}</span></p>)
+                  :(<p><span>{contractAddress}</span><span>-></span><span>{abi}</span></p>)
+          }
+            {
+                hasSignMessage? null:(<span class={isAddWhitelist?'active':''} onClick={this.onToggleWhiteList}>  {this.onTransLocal('Dapp_WhiteList')}</span>)
+            }
+          {/*<span class={isAddWhitelist?'active':''} onClick={this.onToggleWhiteList}>  {this.onTransLocal('Dapp_WhiteList')}</span>*/}
         </header>
         <div className="AskPopup__container">
           {abi == 'transfer'?

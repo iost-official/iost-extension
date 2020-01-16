@@ -75,6 +75,7 @@ const IWalletJS = {
       const IOST_PROVIDER = new IOST.HTTPProvider(IWalletJS.network == 'MAINNET'?IOST_NODE_URL: IOST_TEST_NODE_URL)
       IWalletJS.rpc = new IOST.RPC(IOST_PROVIDER)
       IWalletJS.iost.signAndSend = signAndSend
+      IWalletJS.iost.signMessage = signMessage
       IWalletJS.iost.setRPC(IWalletJS.rpc)
       IWalletJS.iost.setAccount(IWalletJS.iost.account)
       IWalletJS.iost.account = new IOST.Account(IWalletJS.account.name)
@@ -137,6 +138,56 @@ function signAndSend(tx){
   return cb
 }
 
+/**
+ * 消息签名
+ * @param message 待签名信息，文本
+ */
+function signMessage(message) {
+    const cb = new Callback()
+
+    if(typeof message !== 'string') {
+        // throw new Error(`signMessage failure message must be String type`);
+        setTimeout(() => {
+            cb.pushMsg("failed", 'message must be String type')
+        }, 0)
+        return cb;
+    }
+    let regex = /^[1-9a-zA-Z]{1,11}$/;
+    if (!regex.test(message)) {
+        // throw new Error(`signMessage failure message must match '/^[1-9a-zA-Z]{12}$/'`);
+        setTimeout(() => {
+            cb.pushMsg("failed", 'message must be [1-9a-zA-Z], size less than 12')
+        }, 0)
+        return cb;
+    }
+    const fakeContract = "FakeContract";
+    const signMessageActionName = "@__SignMessage";
+    const mockIostTx = IWalletJS.iost.callABI("iost.sign", signMessageActionName, [message]);
+    const domain = document.domain
+    const actionId = uuidv4()
+
+    const network = this.currentRPC._provider._host.indexOf('//api.iost.io') > -1 ? 'MAINNET' : 'TESTNET'
+    const windowMessage = {
+        action: ACTION.TX_ASK,
+        actionId: actionId,
+        payload: {
+            tx: mockIostTx,
+            domain,
+            account: IWalletJS.account,
+            network,
+            txABI: [fakeContract, signMessageActionName, [message]]
+        }
+    }
+    actionMap[actionId] = cb
+    if (IWalletJS.account) {
+        window.postMessage(windowMessage, '*')
+    } else {
+        setTimeout(() => {
+            cb.pushMsg("failed", 'no account')
+        }, 0)
+    }
+    return cb
+}
 // window.iost = IWalletJS
 
 window.addEventListener('message', (e) => {
