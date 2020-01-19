@@ -6,7 +6,7 @@ const iconSrc = {
   emogi: '/static/images/icon-token-emogi.png',
   idt: '/static/images/icon-token-idt.png',
   ifry: '/static/images/icon-token-ifry.png',
-  iost: '/static/images/logo3.png',
+  // iost: '/static/images/logo3.png',
   iplay: '/static/images/icon-token-iplay.svg',
   itopia: '/static/images/icon-token-itopia.svg',
   itrx: '/static/images/icon-token-itrx.svg',
