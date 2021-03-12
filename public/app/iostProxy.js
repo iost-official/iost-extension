@@ -110,13 +110,24 @@ const IWalletJS = {
 
 window.postMessage({action: 'GET_ACCOUNT'}, '*')
 
+const mapHostToNetwork = (url) => {
+  if (url.includes('//test.api.iost.io')) {
+    return "TESTNET"
+  }
+
+  if (url.includes('//api.iost.io')) {
+    return "MAINNET"
+  }
+
+  return "LOCALNET"
+}
 
 function signAndSend(tx){
   const domain = document.domain
   const actionId = uuidv4()
   const cb = new Callback()
   const action = tx.actions[0]
-  const network = this.currentRPC._provider._host.indexOf('//api.iost.io') > -1?'MAINNET':'TESTNET'
+  const network = mapHostToNetwork(this.currentRPC._provider._host)
   const message = {
     action: ACTION.TX_ASK,
     actionId: actionId,
@@ -166,7 +177,7 @@ function signMessage(message) {
     const domain = document.domain
     const actionId = uuidv4()
 
-    const network = this.currentRPC._provider._host.indexOf('//api.iost.io') > -1 ? 'MAINNET' : 'TESTNET'
+    const network = mapHostToNetwork(this.currentRPC._provider._host)
     const windowMessage = {
         action: ACTION.TX_ASK,
         actionId: actionId,

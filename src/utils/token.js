@@ -12,10 +12,11 @@ export const token = {
   getTokenSymbols: () => store.getState().token.savedTokenSymbols,
 }
 
-export const getTokenInfo = async (token, isProd) => {
-  const url = isProd == 'MAINNET' ? 'https://api.iost.io/' : isProd == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'https://test.api.iost.io/';
+export const getTokenInfo = async (token, account) => {
+  const { network, endpoint } = account
+  const url = network == 'MAINNET' ? 'https://api.iost.io/' : network == 'LOCALNET' ? endpoint || 'http://127.0.0.1:30001/' : 'https://test.api.iost.io/';
   try {
-    const { data } = await axios.get(`${url}getTokenInfo/${token}/0`,{
+    const { data } = await axios.get(`${url.endsWith("/") ? url : `${url}/` }getTokenInfo/${token}/0`,{
       timeout: 10000
     })
     if(data.code && data.code != 0){

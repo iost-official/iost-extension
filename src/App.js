@@ -48,7 +48,7 @@ class App extends Component<Props> {
             const { type, name, privateKey } = account
             const password = await user.getLockPassword()
             const encodedPrivateKey = utils.aesDecrypt(privateKey, password)
-            iost.changeNetwork(utils.getNetWork(account.network))
+            iost.changeNetwork(utils.getNetWork(account))
             // this.changeLocation('/gasManage')
 
             iost.changeAccount(account)

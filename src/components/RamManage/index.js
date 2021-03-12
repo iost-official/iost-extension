@@ -14,6 +14,7 @@ import { privateKeyToPublicKey } from 'utils/key'
 import utils from 'utils'
 
 import ui from "utils/ui";
+import user from "utils/user";
 import './index.scss'
 
 type Props = {
@@ -112,15 +113,17 @@ class RamManage extends Component<Props> {
     })
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const { isBuy, buyAmount,sellAmount, resourceAddress, ramMarketInfo  } = this.state
     const account = iost.account.getID()
+    const activeAccount = await user.getActiveAccount()
+
     if(isBuy){
       const _buyAmount = parseInt(buyAmount * 1024)
       const ramPrice = (ramMarketInfo.buy_price*1024).toFixed(4)
       const amountLimit = ['iost', (+ramPrice+1) * (+buyAmount)]
 
-      iost.signAndSend('ram.iost', 'buy', [account, resourceAddress || account, _buyAmount], amountLimit)
+      iost.signAndSend('ram.iost', 'buy', [account, resourceAddress || account, _buyAmount], amountLimit, activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null)
       .on('pending', () => {
         this.setState({
           isLoading: true,
@@ -142,7 +145,7 @@ class RamManage extends Component<Props> {
       const amountLimit = ['ram', _sellAmount]
       // return console.log(amountLimit)
       
-      iost.signAndSend('ram.iost', 'sell', [account, account, _sellAmount], amountLimit)
+      iost.signAndSend('ram.iost', 'sell', [account, account, _sellAmount], amountLimit, activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null)
       .on('pending', () => {
         this.setState({
           isLoading: true,

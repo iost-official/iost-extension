@@ -8,6 +8,7 @@ import TransactionSuccess from 'components/TransactionSuccess'
 import TransactionFailed from 'components/TransactionFailed'
 import iost from 'iostJS/iost'
 import ui from 'utils/ui'
+import user from 'utils/user'
 
 import './SellRam.scss'
 
@@ -36,11 +37,12 @@ class SellRam extends Component<Props> {
     })
   }
 
-  sellRam = () => {
+  sellRam = async () => {
     const { amount, forWho } = this.state
     const ID = iost.account.getID()
+    const activeAccount = await user.getActiveAccount()
 
-    iost.sendTransaction('ram.iost', 'sell', [ID, forWho || ID, Number(amount)])
+    iost.sendTransaction('ram.iost', 'sell', [ID, forWho || ID, Number(amount)], activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null)
       .onPending(() => {
         this.setState({
           isLoading: true,

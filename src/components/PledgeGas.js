@@ -7,6 +7,7 @@ import LoadingImage from 'components/LoadingImage'
 import TransactionSuccess from 'components/TransactionSuccess'
 import TransactionFailed from 'components/TransactionFailed'
 import ui from 'utils/ui'
+import user from 'utils/user'
 import iost from 'iostJS/iost'
 
 import './PledgeGas.scss'
@@ -35,11 +36,12 @@ class PledgeGas extends Component<Props> {
     })
   }
 
-  pledgeToken = () => {
+  pledgeToken = async () => {
     const { amount, forWho } = this.state
     const ID = iost.account.getID()
+    const activeAccount = await user.getActiveAccount()
 
-    iost.sendTransaction('gas.iost', 'pledge', [ID, forWho || ID, amount])
+    iost.sendTransaction('gas.iost', 'pledge', [ID, forWho || ID, amount], activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null )
       .onPending(() => {
         this.setState({
           isLoading: true,

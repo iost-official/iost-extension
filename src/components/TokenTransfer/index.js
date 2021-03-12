@@ -13,12 +13,12 @@ import TokenTransferSuccess from 'components/TokenTransferSuccess'
 import TokenTransferFailed from 'components/TokenTransferFailed'
 import ui from 'utils/ui'
 import utils from 'utils'
+import user from "utils/user";
 import token, { defaultAssets } from 'utils/token'
 
 import LoadingImage from 'components/LoadingImage'
 
 import './index.scss'
-import user from "utils/user";
 import iconSrc from "constants/icon";
 
 const defaultConfig = {
@@ -114,10 +114,11 @@ class Index extends Component<Props> {
     })
   }
 
-  transfer = () => {
+  transfer = async () => {
     const { to, amount, iGASPrice, iGASLimit, memo, token, assetsList } = this.state
     const { selectedTokenSymbol } = this.props
     const accountName = iost.account.getID()
+    const activeAccount = await user.getActiveAccount()
 
     // 1. Create transfer tx
     // const tx = new iost.Tx(iGASPrice, iGASLimit, 0)
@@ -127,7 +128,10 @@ class Index extends Component<Props> {
     //   JSON.stringify([selectedTokenSymbol, accountName, to, amount, memo]),
     // )
     // tx.setTime(defaultConfig.expiration, defaultConfig.delay, 0)
-    const chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    let chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    if (activeAccount.network === 'LOCALNET') {
+      chainId = activeAccount.chainID
+    }
 
     const asset = defaultAssets.concat(assetsList).find(item => item.symbol === token)
     let contract = this.getAssetContract(asset)

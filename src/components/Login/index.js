@@ -100,7 +100,7 @@ class Login extends Component<Props> {
       return
     }
 
-    iost.changeNetwork(utils.getNetWork(account.network))
+    iost.changeNetwork(utils.getNetWork(account))
     iost.rpc.blockchain.getAccountInfo(account)
       .then((accountInfo) => {
         if (!iost.isValidAccount(accountInfo, publicKey)) {

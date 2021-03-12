@@ -20,7 +20,7 @@ class TransactionFailed extends Component<Props> {
           <p className="TransactionFailed__item--txhash">{tx.tx_hash}</p>
         </p>
         <p className="TransactionFailed__item">
-          {I18n.t('gasUsage')}: {tx.gas_usage}
+          {I18n.t('gasUsage')}: {JSON.stringify(tx)}
         </p>
         {tx.message && (
           <p className="TransactionFailed__item TransactionFailed__item--message">

@@ -6,6 +6,7 @@
   height: 540px;
   background-color: $gray;
   text-align: center;
+
   .privateKey-content {
     margin-top: 30px;
     width: 300px;
@@ -15,6 +16,7 @@
     resize: none;
     padding: 5px;
   }
+
   .input-accountName {
     margin-top: 30px;
     width: 300px;
@@ -33,6 +35,26 @@
     margin:10px auto 0px auto;
     color:#999;
   }
+
+  .input-localnetInfo {
+    margin-top: 15px;
+    width: 300px;
+    height: 30px;
+    border: 1px solid $border;
+    border-radius: 4px;
+    resize: none;
+    padding: 5px;
+  }
+
+  .localnetInfoText {
+    width: 300px;
+    resize: none;
+    display: block;
+    padding: 5px 5px 0px 5px;
+    margin: 10px auto 0px auto;
+    color: #999;
+  }
+
   .btn-submit {
     position: absolute;
     bottom: 30px;
@@ -40,6 +62,4 @@
     right: 0;
     margin: 0 auto;
   }
-
- 
 }

@@ -53,7 +53,7 @@ class Account extends Component<Props> {
         const { type, name, privateKey } = account
         const password = await user.getLockPassword()
         if(password){
-          iost.changeNetwork(utils.getNetWork(account.network))
+          iost.changeNetwork(utils.getNetWork(account))
           // const encodedPrivateKey = utils.aesDecrypt(privateKey, password)
           // iost.loginAccount(name, encodedPrivateKey)
 
@@ -95,7 +95,7 @@ class Account extends Component<Props> {
     try {
       const ipassword = await user.getLockPassword()
       if(ipassword){
-        iost.changeNetwork(utils.getNetWork(account.network))
+        iost.changeNetwork(utils.getNetWork(account))
         // const encodedPrivateKey = utils.aesDecrypt(privateKey, ipassword)
         // iost.changeNetwork(utils.getNetWork(account.network))
         // iost.loginAccount(name, encodedPrivateKey)

@@ -12,6 +12,7 @@ import { privateKeyToPublicKey } from 'utils/key'
 import utils from 'utils'
 
 import ui from "utils/ui";
+import user from "utils/user";
 import './index.scss'
 import classnames from "classnames";
 
@@ -103,11 +104,13 @@ class GasManage extends Component<Props> {
   }
 
 
-  onSubmit = () => {
+  onSubmit = async () => {
     const { isStake, buyAmount, resourceAddress, sellAmount } = this.state
     const account = iost.account.getID()
+    const activeAccount = await user.getActiveAccount()
+
     if(isStake){
-      iost.signAndSend('gas.iost', 'pledge', [account, resourceAddress || account, buyAmount])
+      iost.signAndSend('gas.iost', 'pledge', [account, resourceAddress || account, buyAmount], null,  activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null)
       .on('pending', () => {
         this.setState({
           isLoading: true,
@@ -124,7 +127,7 @@ class GasManage extends Component<Props> {
         this.moveTo('/tokenTransferFailed')()
       })
     }else{
-      iost.signAndSend('gas.iost', 'unpledge', [account, resourceAddress || account, sellAmount])
+      iost.signAndSend('gas.iost', 'unpledge', [account, resourceAddress || account, sellAmount], null, activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null)
       .on('pending', () => {
         this.setState({
           isLoading: true,

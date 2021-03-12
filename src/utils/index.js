@@ -30,8 +30,11 @@ const utils = {
   delay(ms){
     return new Promise(resolve => setTimeout(resolve, ms));
   },
-  getNetWork(type){
-    return type == 'MAINNET' ? 'https://api.iost.io' : type == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'https://test.api.iost.io'
+  getNetWork(account){
+    if (account.network === 'LOCALNET') {
+      return account.endpoint
+    }
+    return account.network == 'MAINNET' ? 'https://api.iost.io' : 'https://test.api.iost.io'
   },
   getStorage(key, defaultValue) {
     return new Promise(resolve => (
@@ -43,7 +46,6 @@ const utils = {
       chrome.storage.local.set({[key]: value}, resolve)
     ))
   },
-  
 }
 
 

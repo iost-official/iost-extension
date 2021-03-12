@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { I18n } from 'react-redux-i18n'
 
 import ui from 'utils/ui'
+import user from 'utils/user'
 import Input from 'components/Input'
 import Button from 'components/Button'
 import LoadingImage from 'components/LoadingImage'
@@ -36,11 +37,12 @@ class BuyRam extends Component<Props> {
     })
   }
 
-  buyRam = () => {
+  buyRam = async () => {
     const { amount, forWho } = this.state
     const ID = iost.account.getID()
+    const activeAccount = await user.getActiveAccount()
 
-    iost.sendTransaction('ram.iost', 'buy', [ID, forWho || ID, Number(amount)])
+    iost.sendTransaction('ram.iost', 'buy', [ID, forWho || ID, Number(amount)], activeAccount.network === 'LOCALNET' ? activeAccount.chainID : null)
       .onPending(() => {
         this.setState({
           isLoading: true,

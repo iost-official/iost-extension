@@ -7,6 +7,7 @@ import LoadingImage from 'components/LoadingImage'
 import NetworkSelector from 'components/NetworkSelector'
 import iost from 'iostJS/iost'
 import { privateKeyToPublicKey, publickKeyToAccount, nameAndPublicKeyToAccount } from 'utils/key'
+import { localnetDefault } from 'constants/localnet'
 import utils from 'utils'
 import ui from 'utils/ui';
 import user from 'utils/user';
@@ -36,6 +37,8 @@ class AccountImport extends Component<Props> {
   state = {
     privateKey: '',
     accountName: '',
+    endpoint: '',
+    chainID: '',
     isLoading: false,
     errorMessage: '',
     developerMode: undefined,
@@ -66,9 +69,8 @@ class AccountImport extends Component<Props> {
 
   getDeveloperStatus = async () => {
     const developerMode = await utils.getStorage('developerMode');
-    this.setState({
-        developerMode
-    });
+
+    this.setState(developerMode ? { developerMode, ...localnetDefault } : { developerMode });
   }
 
   onSubmit = async () => {
@@ -83,9 +85,12 @@ class AccountImport extends Component<Props> {
     try {
       publicKey = privateKeyToPublicKey(privateKey)
       if(accountName) {
-        let account = await nameAndPublicKeyToAccount(accountName, publicKey, 'LOCALNET')
+        let account = await nameAndPublicKeyToAccount(accountName, publicKey, this.state.endpoint)
         const password = await user.getLockPassword()
-        accounts = [{ name: account.name,
+        accounts = [{ 
+            name: account.name,
+            endpoint: this.state.endpoint,
+            chainID: this.state.chainID,
             network: 'LOCALNET',
             privateKey: utils.aesEncrypt(privateKey, password),
             publicKey: publicKey,
@@ -141,8 +146,7 @@ class AccountImport extends Component<Props> {
       if(activeAccount){
         changeLocation('/accountManage')
       }else {
-        iost.changeNetwork(utils.getNetWork(accounts[0].network))
-
+        iost.changeNetwork(utils.getNetWork(account[0]))
         iost.rpc.blockchain.getAccountInfo(accounts[0].name)
         .then((accountInfo) => {
           if (!iost.isValidAccount(accountInfo, accounts[0].publicKey)) {
@@ -198,11 +202,20 @@ class AccountImport extends Component<Props> {
         <Header title={I18n.t('firstLogin_ImportAccount')} logo={!canBack} onBack={this.backTo} hasSetting={false} />
         <div className="accountImport-box">
           <textarea name="privateKey" id="" className="privateKey-content" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterPrivate')}/>
-          {this.state.developerMode === true ? (
-            <Fragment><p className="accountNameText">{I18n.t('ImportAccount_LocalNetMessage')}</p>
-            <input name="accountName" id="" className="input-accountName" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterName')}/>
+          {this.state.developerMode && (
+            <Fragment>
+              <p className="accountNameText">{I18n.t('ImportAccount_LocalNetMessage')}</p>
+              <input name="accountName" id="" className="input-accountName" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterName')}/>
+              {this.state.accountName && 
+                <Fragment>
+                  <p className="localnetInfoText">{I18n.t('ImportAccount_LocalNetEndpointMessage')}</p>
+                  <input name="endpoint" id="" value={this.state.endpoint} className="input-localnetInfo" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterEndpoint')}/>
+                  <p className="localnetInfoText">{I18n.t('ImportAccount_LocalNetChainIDMessage')}</p>
+                  <input name="chainID" id="" min="0" type="number" value={this.state.chainID} className="input-localnetInfo" onChange={this.handleChange} placeholder={I18n.t('ImportAccount_EnterChainID')}/>
+                </Fragment>
+              }
             </Fragment>
-          ) : (null)}
+          )}
           <Button className="btn-submit" onClick={this.onSubmit}>{isLoading ? <LoadingImage /> : I18n.t('ImportAccount_Submit')}</Button>
         </div>
       </Fragment>

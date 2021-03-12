@@ -128,12 +128,15 @@ const iost = {
 
     return foundKey
   },
-  sendTransaction: (contractAddress, contractAction, args) => {
+  sendTransaction: (contractAddress, contractAction, args, chainID) => {
     const tx = iost.iost.callABI(contractAddress, contractAction, args)
     // tx.addApprove("*", "unlimited")
     tx.addApprove("iost", +args[2])
 
-    const chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    let chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    if (chainID) {
+      chainId = chainID
+    }
     tx.setChainID(chainId)
 
     iost.account.signTx(tx)
@@ -174,7 +177,7 @@ const iost = {
       }
     }
   },
-  signAndSend: (contractAddress, contractAction, args, presetAmountLimit) => {
+  signAndSend: (contractAddress, contractAction, args, presetAmountLimit, chainID) => {
     const tx = iost.iost.callABI(contractAddress, contractAction, args)
     
     if (presetAmountLimit) {
@@ -183,7 +186,10 @@ const iost = {
       tx.addApprove("iost", +args[2])
     }
 
-    const chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    let chainId = ((iost.rpc.getProvider()._host.indexOf('//api.iost.io') < 0) && (iost.rpc.getProvider()._host.indexOf('//127.0.0.1') < 0) && (iost.rpc.getProvider()._host.indexOf('//localhost') < 0)) ? 1023 : 1024;
+    if (chainID) {
+      chainId = chainID
+    }
     tx.setChainID(chainId)
 
     const fire = new Callback()

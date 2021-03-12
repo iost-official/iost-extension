@@ -39,8 +39,8 @@ export const publickKeyToAccount = async (publickKey, isProd = true) => {
   // throw new Error('Invlid publickKey');
 }
 
-export const nameAndPublicKeyToAccount = async (name, publicKey, isProd) => {
-  const url = isProd == 'MAINNET' ? 'https://explorer.iost.io/': isProd == 'LOCALNET' ? 'http://127.0.0.1:30001' : 'http://54.249.186.224/'
+// get local account
+export const nameAndPublicKeyToAccount = async (name, publicKey, url) => {
   try {
     const { data } = await axios.get(`${url}/getAccount/${name}/1`,{
       timeout: 10000
